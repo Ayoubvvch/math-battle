@@ -2,121 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MATH BATTLE: d/dx Calculus Showdown [CONTROLLER & ARCADE EDITION]</title>
-  <meta name="description" content="Take control of d/dx! Full Gamepad, Virtual Joystick, and Keyboard support in an OLED Black Calculus Arena.">
-  <meta name="theme-color" content="#000000">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Math Battle: d/dx Calculus Showdown [GODMODE PILOT EDITION]</title>
+  <meta name="description" content="Take absolute control of d/dx! Full Gamepad, Virtual Joystick, Triple Dash, Calculus Beam & Leibniz Bomb.">
   <style>
+    :root {
+      --bg: #000000;
+      --card-bg: #030712;
+      --border: #1f2937;
+      --cyan: #00f0ff;
+      --orange: #ff5500;
+      --green: #10b981;
+      --red: #ff0055;
+      --purple: #c026d3;
+      --gold: #ffd700;
+      --text: #f8fafc;
+      --muted: #64748b;
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    :root {
-      --bg: #000000;
-      --card: #04060d;
-      --cyan: #00f0ff;
-      --orange: #ff5500;
-      --gold: #ffd700;
-      --purple: #c026d3;
-      --green: #10b981;
-      --red: #ff0055;
-      --border: rgba(255, 255, 255, 0.08);
+      -webkit-touch-callout: none;
     }
     body {
       background-color: var(--bg);
-      color: #f1f5f9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-      min-height: 100vh;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 6px;
-      overflow-x: hidden;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
     }
     .app-shell {
-      width: 100%;
-      max-width: 490px;
-      background: var(--card);
-      border-radius: 20px;
-      box-shadow: 0 0 50px rgba(0, 240, 255, 0.12), 0 0 0 1px var(--border);
-      overflow: hidden;
+      position: relative;
+      width: 100vw;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 980px;
+      background: var(--bg);
       display: flex;
       flex-direction: column;
-      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.12);
+      overflow: hidden;
     }
-    /* Roster Tabs */
+    /* Battle Selection Bar */
     .roster-tabs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: #020307;
-      padding: 6px;
-      gap: 4px;
+      display: flex;
+      background: #02040a;
       border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 6px 8px;
+      gap: 6px;
     }
+    .roster-tabs::-webkit-scrollbar { display: none; }
     .roster-btn {
-      appearance: none;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
-      color: #64748b;
-      padding: 7px 4px;
-      font-size: 11px;
+      flex: 1;
+      min-width: 85px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      font-size: 10px;
       font-weight: 800;
-      border-radius: 8px;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      text-align: center;
-      letter-spacing: 0.3px;
+      white-space: nowrap;
       transition: all 0.15s ease;
+      text-align: center;
     }
     .roster-btn.active {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(255, 85, 0, 0.2));
-      color: #ffffff;
+      background: rgba(0, 240, 255, 0.15);
       border-color: var(--cyan);
+      color: var(--cyan);
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
     }
-    /* Control Mode Switch (Player vs Auto) */
+    /* Pilot & Controller Status Bar */
     .pilot-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 6px 12px;
-      background: #02040a;
+      background: #010204;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 10px;
     }
     .pilot-toggle-group {
-      display: inline-flex;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.05);
       padding: 2px;
-      gap: 2px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .pilot-toggle-btn {
-      appearance: none;
-      border: none;
       background: transparent;
+      border: none;
       color: #64748b;
+      padding: 3px 8px;
       font-size: 10px;
       font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.1s ease;
     }
     .pilot-toggle-btn.active {
       background: var(--cyan);
       color: #000000;
+      font-weight: 900;
       box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
     }
     .controller-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 5px;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       color: #10b981;
       text-transform: uppercase;
@@ -133,7 +140,7 @@
     .viewport {
       position: relative;
       width: 100%;
-      aspect-ratio: 9 / 16;
+      flex: 1;
       background: #000000;
       touch-action: none;
       overflow: hidden;
@@ -151,50 +158,81 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      padding: 16px;
-    }
-    .touch-btn {
-      pointer-events: auto;
-      width: 66px;
-      height: 66px;
-      border-radius: 50%;
-      background: rgba(0, 240, 255, 0.12);
-      border: 2px solid var(--cyan);
-      color: #ffffff;
-      font-weight: 900;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
-      cursor: pointer;
-      user-select: none;
-      touch-action: none;
-      transition: all 0.1s ease;
-    }
-    .touch-btn:active, .touch-btn.active {
-      transform: scale(0.92);
-      background: var(--cyan);
-      color: #000000;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+      padding: 12px;
     }
     .touch-stick-area {
       position: absolute;
       left: 0;
       bottom: 0;
       width: 50%;
-      height: 50%;
+      height: 55%;
       pointer-events: auto;
       touch-action: none;
+    }
+    .touch-cluster {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+      pointer-events: auto;
+    }
+    .touch-btn {
+      pointer-events: auto;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.75);
+      border: 2px solid var(--cyan);
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 9px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      transition: all 0.08s ease;
+    }
+    .touch-btn:active, .touch-btn.active {
+      transform: scale(0.90);
+    }
+    .touch-btn-dash {
+      border-color: #00f0ff;
+      background: rgba(0, 240, 255, 0.15);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    }
+    .touch-btn-dash:active {
+      background: #00f0ff;
+      color: #000;
+    }
+    .touch-btn-beam {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    .touch-btn-beam:active {
+      background: #10b981;
+      color: #000;
+    }
+    .touch-btn-bomb {
+      border-color: #ff0055;
+      background: rgba(255, 0, 85, 0.2);
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+    }
+    .touch-btn-bomb:active {
+      background: #ff0055;
+      color: #fff;
     }
     /* Control Deck */
     .deck {
       background: #020307;
-      padding: 10px 14px;
+      padding: 8px 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       border-top: 1px solid var(--border);
     }
     .action-row {
@@ -208,17 +246,17 @@
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.05);
       color: #cbd5e1;
-      padding: 8px 12px;
+      padding: 7px 10px;
       font-family: inherit;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.5px;
-      border-radius: 9px;
+      border-radius: 8px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 4px;
       transition: all 0.12s ease;
       white-space: nowrap;
     }
@@ -229,14 +267,14 @@
       background: linear-gradient(135deg, #00f0ff, #0284c7);
       color: #000000;
       border: none;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
       flex: 1.2;
     }
     .btn-action {
       background: linear-gradient(135deg, #ff0055, #ff5500);
       color: #ffffff;
       border: none;
-      box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.4);
     }
     .btn-speed.active {
       background: rgba(0, 240, 255, 0.2);
@@ -247,15 +285,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 10px;
+      font-size: 9px;
       color: #64748b;
       font-weight: 700;
     }
     .frenzy-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 8px;
+      gap: 4px;
+      padding: 2px 7px;
       background: rgba(255, 85, 0, 0.1);
       border: 1px solid rgba(255, 85, 0, 0.3);
       border-radius: 999px;
@@ -265,11 +303,15 @@
     }
     .guide-box {
       text-align: center;
-      font-size: 10px;
-      color: #64748b;
-      padding: 4px;
+      font-size: 9px;
+      color: #94a3b8;
+      padding: 4px 6px;
       background: #010205;
-      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      line-height: 1.3;
+    }
+    .guide-box b {
+      color: var(--cyan);
     }
   </style>
 </head>
@@ -301,20 +343,31 @@
     <div class="viewport" id="viewport">
       <canvas id="gameCanvas" width="540" height="960"></canvas>
 
-      <!-- On-Screen Mobile Touch Joystick & Dash Overlay -->
+      <!-- On-Screen Mobile Touch Joystick & Powers Cluster -->
       <div class="touch-stick-area" id="touchStickArea"></div>
       <div class="touch-controls">
         <div></div>
-        <button class="touch-btn" id="touchDashBtn">
-          <span>⚡ DASH</span>
-          <span style="font-size: 8px; opacity: 0.8;">[SPACE]</span>
-        </button>
+        <div class="touch-cluster">
+          <button class="touch-btn touch-btn-bomb" id="touchBombBtn">
+            <span>💥 BOMB</span>
+            <span style="font-size: 7px; opacity: 0.85;">[B / E]</span>
+          </button>
+          <button class="touch-btn touch-btn-beam" id="touchBeamBtn">
+            <span>🎯 BEAM</span>
+            <span style="font-size: 7px; opacity: 0.85;">[X / F]</span>
+          </button>
+          <button class="touch-btn touch-btn-dash" id="touchDashBtn">
+            <span>⚡ DASH</span>
+            <span style="font-size: 7px; opacity: 0.85;">[A / SPC]</span>
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Instructions Guide Bar -->
     <div class="guide-box">
-      🎮 CONTROLLER: <b>LEFT STICK</b> = MOVE • <b>A / CROSS</b> = DASH • <b>KEYBOARD:</b> WASD / ARROWS + SPACEBAR
+      🎮 <b>PAD:</b> L-STICK=MOVE • R-STICK/MOUSE=AIM • <b>A:</b> DASH (x3) • <b>X/RT:</b> BEAM • <b>B/Y:</b> BOMB<br>
+      ⌨️ <b>KEY:</b> WASD=MOVE • MOUSE=AIM • <b>SPACE:</b> DASH • <b>F/L-CLICK:</b> BEAM • <b>E/Q/R-CLICK:</b> BOMB
     </div>
 
     <!-- Controls Deck -->
@@ -334,7 +387,7 @@
 
         <div class="frenzy-pill" id="frenzyTag">
           <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--orange);"></span>
-          <span id="frenzyLabel">60FPS ZERO-DRAG ARENA</span>
+          <span id="frenzyLabel">60FPS GODMODE ARENA</span>
         </div>
       </div>
     </div>
@@ -342,14 +395,15 @@
 
   <script>
     /* ==========================================================
-       MATH BATTLE: d/dx ARCADE SHOWDOWN [CONTROLLER EDITION]
+       MATH BATTLE: d/dx ARCADE SHOWDOWN [GODMODE PILOT EDITION]
        Features:
-       - Full Gamepad API (DualShock, DualSense, Xbox, Generic)
-       - Virtual Touch Joystick + On-screen Dash Button
-       - Fluid Physics with Acceleration, Inertia, and Dash Phase Shift
-       - True Elastic Marble-to-Marble Collisions (No Overlap)
-       - 60FPS Optimization: Object Pooling + Fast Geometric Halos
-       - Spatial Stereo Web Audio Synthesizer + Haptic Rumble
+       - 100% Direct Vector Flight (No oil-slick inertia, no gravity drag)
+       - 3x Rechargeable Chain Rule Dashes with Invulnerability & Slashing
+       - Piercing Calculus Beam Weapon (Ranged sniping against swarms)
+       - Leibniz Supernova Bomb (Screen-wide wipe & laser barrier cancel)
+       - Lifesteal: +3 HP healed per differentiation!
+       - Full Gamepad API (Xbox, PS4, PS5, DualSense Rumble)
+       - Virtual Touch Joystick + Ergonomic 3-Power Cluster
        ========================================================== */
 
     const canvas = document.getElementById('gameCanvas');
@@ -366,6 +420,8 @@
     const padDot = document.getElementById('padDot');
     const frenzyLabel = document.getElementById('frenzyLabel');
     const touchDashBtn = document.getElementById('touchDashBtn');
+    const touchBeamBtn = document.getElementById('touchBeamBtn');
+    const touchBombBtn = document.getElementById('touchBombBtn');
     const touchStickArea = document.getElementById('touchStickArea');
 
     let currentMatch = 'x3';
@@ -395,7 +451,7 @@
 
     /* ---------------- Audio & Haptic Feedback ---------------- */
     let audioCtx = null;
-    let lastAudioTime = { wall: 0, ball: 0 };
+    let lastAudioTime = { wall: 0, ball: 0, beam: 0 };
 
     function initAudio() {
       if (!audioCtx) {
@@ -408,11 +464,9 @@
     }
 
     function triggerRumble(weakIntensity = 0.3, strongIntensity = 0.5, duration = 150) {
-      // 1. Mobile browser haptic
       if (navigator.vibrate) {
         navigator.vibrate(Math.min(100, duration));
       }
-      // 2. Physical Gamepad Rumble
       const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
       for (const gp of gamepads) {
         if (gp && gp.vibrationActuator && gp.vibrationActuator.playEffect) {
@@ -440,28 +494,28 @@
         }
 
         if (type === 'wall_hit') {
-          if (now - lastAudioTime.wall < 0.035) return;
+          if (now - lastAudioTime.wall < 0.03) return;
           lastAudioTime.wall = now;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(260 * pitchMod, now);
-          osc.frequency.exponentialRampToValueAtTime(75 * pitchMod, now + 0.045);
+          osc.frequency.exponentialRampToValueAtTime(75 * pitchMod, now + 0.04);
           gain.gain.setValueAtTime(0.12, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
           osc.connect(gain);
           gain.connect(dest);
           osc.start(now);
-          osc.stop(now + 0.045);
+          osc.stop(now + 0.04);
         } else if (type === 'ball_clack') {
-          if (now - lastAudioTime.ball < 0.03) return;
+          if (now - lastAudioTime.ball < 0.025) return;
           lastAudioTime.ball = now;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(1050 * pitchMod, now);
           osc.frequency.exponentialRampToValueAtTime(280 * pitchMod, now + 0.04);
-          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.setValueAtTime(0.15, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
           osc.connect(gain);
           gain.connect(dest);
@@ -472,25 +526,64 @@
           const gain = audioCtx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(650 * pitchMod, now);
-          osc.frequency.exponentialRampToValueAtTime(1300 * pitchMod, now + 0.18);
-          gain.gain.setValueAtTime(0.32, now);
+          osc.frequency.exponentialRampToValueAtTime(1350 * pitchMod, now + 0.16);
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        } else if (type === 'dash') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.14);
+          gain.gain.setValueAtTime(0.24, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.14);
+        } else if (type === 'beam') {
+          if (now - lastAudioTime.beam < 0.08) return;
+          lastAudioTime.beam = now;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(1400, now);
+          osc.frequency.exponentialRampToValueAtTime(420, now + 0.12);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'bomb') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(30, now + 0.45);
+          gain.gain.setValueAtTime(0.55, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === 'heal') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523, now);
+          osc.frequency.setValueAtTime(783, now + 0.05);
+          osc.frequency.setValueAtTime(1046, now + 0.10);
+          gain.gain.setValueAtTime(0.15, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
           osc.connect(gain);
           gain.connect(dest);
           osc.start(now);
           osc.stop(now + 0.2);
-        } else if (type === 'dash') {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(400, now);
-          osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
-          gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-          osc.connect(gain);
-          gain.connect(dest);
-          osc.start(now);
-          osc.stop(now + 0.15);
         } else if (type === 'laser_warn') {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -508,7 +601,7 @@
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(220 * pitchMod, now);
           osc.frequency.linearRampToValueAtTime(800 * pitchMod, now + 0.32);
-          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.setValueAtTime(0.22, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
           osc.connect(gain);
           gain.connect(dest);
@@ -519,13 +612,13 @@
           const gain = audioCtx.createGain();
           osc.type = 'square';
           osc.frequency.setValueAtTime(150, now);
-          osc.frequency.exponentialRampToValueAtTime(35, now + 0.22);
-          gain.gain.setValueAtTime(0.35, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.frequency.exponentialRampToValueAtTime(35, now + 0.2);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
           osc.connect(gain);
           gain.connect(dest);
           osc.start(now);
-          osc.stop(now + 0.22);
+          osc.stop(now + 0.2);
         } else if (type === 'pop_zero') {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -543,13 +636,13 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(f, now + idx * 0.09);
-            gain.gain.setValueAtTime(0.22, now + idx * 0.09);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.35);
+            osc.frequency.setValueAtTime(f, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.22, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
             osc.connect(gain);
             gain.connect(dest);
-            osc.start(now + idx * 0.09);
-            osc.stop(now + idx * 0.09 + 0.4);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.4);
           });
         }
       } catch (e) {}
@@ -557,7 +650,7 @@
 
     /* ---------------- Input Subsystems: Gamepad, Touch, Keyboard ---------------- */
     const keys = {
-      up: false, down: false, left: false, right: false, dash: false
+      up: false, down: false, left: false, right: false
     };
 
     window.addEventListener('keydown', (e) => {
@@ -570,6 +663,14 @@
         e.preventDefault();
         triggerDash();
       }
+      if (e.code === 'KeyF' || e.code === 'KeyJ' || e.code === 'KeyK') {
+        e.preventDefault();
+        triggerBeam();
+      }
+      if (e.code === 'KeyE' || e.code === 'KeyQ' || e.code === 'KeyB') {
+        e.preventDefault();
+        triggerBomb();
+      }
     });
 
     window.addEventListener('keyup', (e) => {
@@ -578,6 +679,24 @@
       if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
       if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
     });
+
+    
+    // Mouse Aiming for PC
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseScreenX = ((e.clientX - rect.left) / rect.width) * canvas.width;
+      const mouseScreenY = ((e.clientY - rect.top) / rect.height) * canvas.height;
+      const px = toScreenX(player.x);
+      const py = toScreenY(player.y);
+      player.facingAng = Math.atan2(-(mouseScreenY - py), mouseScreenX - px);
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      initAudio();
+      if (e.button === 0) triggerBeam();
+      else if (e.button === 2) triggerBomb();
+    });
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
     // Gamepad Connection Listeners
     window.addEventListener("gamepadconnected", (e) => {
@@ -664,8 +783,20 @@
       triggerDash();
     });
 
+    touchBeamBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      initAudio();
+      triggerBeam();
+    });
+
+    touchBombBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      initAudio();
+      triggerBomb();
+    });
+
     /* ---------------- Zero-Allocation Object Pools ---------------- */
-    const MAX_PARTICLES = 120;
+    const MAX_PARTICLES = 160;
     const particlePool = Array.from({ length: MAX_PARTICLES }, () => ({
       active: false, x: 0, y: 0, vx: 0, vy: 0, color: '#fff', size: 2, alpha: 1, life: 0, maxLife: 30, gravity: 0
     }));
@@ -687,7 +818,7 @@
       p.gravity = gravity;
     }
 
-    const MAX_POPUPS = 20;
+    const MAX_POPUPS = 25;
     const popupPool = Array.from({ length: MAX_POPUPS }, () => ({
       active: false, text: '', x: 0, y: 0, vy: -1.8, color: '#fff', alpha: 1, life: 0, maxLife: 45, isDmg: false, fromPlayer: false
     }));
@@ -707,33 +838,65 @@
       p.fromPlayer = fromPlayer;
     }
 
+    // Calculus Piercing Beam Projectiles
+    const MAX_BEAMS = 20;
+    const beamPool = Array.from({ length: MAX_BEAMS }, () => ({
+      active: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, maxLife: 0.8, color: '#00f0ff'
+    }));
+
+    function spawnBeam(x, y, vx, vy) {
+      const b = beamPool.find(item => !item.active);
+      if (!b) return;
+      b.active = true;
+      b.x = x;
+      b.y = y;
+      b.vx = vx;
+      b.vy = vy;
+      b.life = 0;
+      b.maxLife = 0.75;
+      b.color = '#00f0ff';
+    }
+
     /* ---------------- Simulation Physics State ---------------- */
     let gameState = 'COUNTDOWN';
     let countdownTimer = 3.6;
     let countdownStepPlayed = { 3: false, 2: false, 1: false, fight: false };
 
-    let BASE_PLAYER_SPEED = 3.2; // Fluid player speed
-    let BASE_BALL_SPEED = 2.6;
+    let BASE_PLAYER_SPEED = 4.2; // High-agility precision flight speed
+    let BASE_BALL_SPEED = 2.4;
     let frenzyMultiplier = 1.0;
 
     let player = {
       x: 1.0,
       y: 1.8,
-      vx: 1.8,
-      vy: -1.2,
-      ax: 0,
-      ay: 0,
+      vx: 0,
+      vy: 0,
+      facingAng: Math.PI / 2, // math direction
       radius: 26,
-      maxHp: 100,
-      hp: 100,
+      maxHp: 150,
+      hp: 150,
       differentiations: 0,
       combos: 0,
       comboTimer: 0,
       invulnerableTimer: 0,
       hitCooldown: 0,
-      dashCooldown: 0,
+
+      // TRIPLE DASH SYSTEM (Chain Rule)
+      dashCharges: 3,
+      maxDashCharges: 3,
+      dashRechargeTimer: 0,
+      dashRechargeTime: 0.75, // 0.75s per charge
       isDashing: false,
       dashTimer: 0,
+      dashSpeed: 10.5,
+
+      // BEAM WEAPON
+      beamCooldown: 0,
+
+      // SUPER BOMB (Leibniz Annihilator)
+      bombEnergy: 100, // 0 - 100%
+      maxBombEnergy: 100,
+
       trail: []
     };
 
@@ -749,27 +912,73 @@
     let shockwaves = [];
     let screenShake = 0;
 
+    /* ---------------- Superpower Actions ---------------- */
     function triggerDash() {
-      if (player.dashCooldown > 0) return;
+      if (player.dashCharges <= 0) return;
+      player.dashCharges--;
       player.isDashing = true;
-      player.dashTimer = 0.22; // 0.22s high-speed invulnerable phase
-      player.dashCooldown = 1.1; // 1.1s recharge
-      player.invulnerableTimer = 0.3;
+      player.dashTimer = 0.22; // 0.22s hypersonic invulnerable phase
+      player.invulnerableTimer = 0.35;
 
-      // Burst velocity forward along current direction
-      let curSpd = Math.hypot(player.vx, player.vy);
-      if (curSpd > 0.01) {
-        player.vx = (player.vx / curSpd) * (BASE_PLAYER_SPEED * 2.8);
-        player.vy = (player.vy / curSpd) * (BASE_PLAYER_SPEED * 2.8);
+      let ang = player.facingAng;
+      if (Math.hypot(player.vx, player.vy) > 0.1) {
+        ang = Math.atan2(player.vy, player.vx);
       }
+      player.vx = Math.cos(ang) * player.dashSpeed;
+      player.vy = Math.sin(ang) * player.dashSpeed;
 
       playSound('dash', player.x / 5.0);
-      triggerRumble(0.2, 0.4, 100);
+      triggerRumble(0.3, 0.6, 120);
 
-      // Dash ghost particles
-      for (let i = 0; i < 15; i++) {
-        spawnParticle(toScreenX(player.x), toScreenY(player.y), '#00f0ff', 2.0);
+      for (let i = 0; i < 20; i++) {
+        spawnParticle(toScreenX(player.x), toScreenY(player.y), '#00f0ff', 2.5);
       }
+    }
+
+    function triggerBeam() {
+      if (player.beamCooldown > 0) return;
+      player.beamCooldown = 0.18; // Fast firing
+
+      const spd = 16.0;
+      const vx = Math.cos(player.facingAng) * spd;
+      const vy = Math.sin(player.facingAng) * spd;
+      spawnBeam(player.x, player.y, vx, vy);
+
+      playSound('beam', player.x / 5.0);
+      triggerRumble(0.15, 0.3, 80);
+    }
+
+    function triggerBomb() {
+      if (player.bombEnergy < 100) return;
+      player.bombEnergy = 0;
+      screenShake = 22;
+
+      playSound('bomb', 0, 1.0);
+      triggerRumble(0.8, 1.0, 350);
+
+      // 1. Shatter all laser hazards instantly!
+      summonCurves = [];
+      summonState = 'IDLE';
+      summonTimer = 6.0;
+
+      // 2. Giant expanding Supernova Shockwave
+      shockwaves.push({
+        x: toScreenX(player.x), y: toScreenY(player.y), r: 15, maxR: 350, color: '#ff0055', alpha: 1.0
+      });
+      shockwaves.push({
+        x: toScreenX(player.x), y: toScreenY(player.y), r: 5, maxR: 280, color: '#00f0ff', alpha: 1.0
+      });
+
+      spawnPopup('💥 LEIBNIZ SUPERNOVA!', toScreenX(player.x), toScreenY(player.y) - 40, '#ffd700', false, true);
+
+      // 3. Differentiate all balls within 4.2 math radius
+      const targets = [...balls];
+      targets.forEach(b => {
+        const d = Math.hypot(b.x - player.x, b.y - player.y);
+        if (d <= 4.2) {
+          strikeAndDifferentiate(b, true);
+        }
+      });
     }
 
     function resetGame(matchType = currentMatch) {
@@ -779,25 +988,29 @@
       countdownStepPlayed = { 3: false, 2: false, 1: false, fight: false };
       frenzyMultiplier = 1.0;
 
-      const pAng = Math.random() * Math.PI * 2;
-      player.x = 1.0;
-      player.y = 1.8;
-      player.vx = Math.cos(pAng) * BASE_PLAYER_SPEED;
-      player.vy = Math.sin(pAng) * BASE_PLAYER_SPEED;
+      player.x = 0;
+      player.y = 0;
+      player.vx = 0;
+      player.vy = 0;
+      player.facingAng = Math.PI / 2;
       player.hp = player.maxHp;
       player.differentiations = 0;
       player.combos = 0;
       player.comboTimer = 0;
       player.invulnerableTimer = 0;
       player.hitCooldown = 0;
-      player.dashCooldown = 0;
+      player.dashCharges = 3;
+      player.dashRechargeTimer = 0;
       player.isDashing = false;
+      player.beamCooldown = 0;
+      player.bombEnergy = 100;
       player.trail = [];
 
       balls = [];
       nextBallId = 1;
       particlePool.forEach(p => p.active = false);
       popupPool.forEach(p => p.active = false);
+      beamPool.forEach(b => b.active = false);
       shockwaves = [];
       summonCurves = [];
       screenShake = 0;
@@ -815,7 +1028,7 @@
       } else if (matchType === 'x4') {
         totalInitialHits = 65;
         remainingHits = 65;
-        summonTimer = 4.2;
+        summonTimer = 4.5;
         const bAng = Math.random() * Math.PI * 2;
         balls.push({
           id: nextBallId++, type: 'x4', label: 'x⁴', power: 4, x: -1.0, y: -1.5,
@@ -922,17 +1135,32 @@
     }
 
     /* ---------------- Differentiation & Combat Execution ---------------- */
-    function strikeAndDifferentiate(ball) {
+    function strikeAndDifferentiate(ball, isBomb = false) {
+      if (!balls.some(b => b.id === ball.id)) return;
+
       player.differentiations++;
       remainingHits = Math.max(0, remainingHits - 1);
-      player.hitCooldown = 0.28;
+      player.hitCooldown = 0.12; // Fast response
+
+      // Lifesteal Recovery (+3 HP)
+      const healAmt = 3;
+      if (player.hp < player.maxHp) {
+        player.hp = Math.min(player.maxHp, player.hp + healAmt);
+        spawnPopup(`+${healAmt} HP`, toScreenX(player.x), toScreenY(player.y) - 20, '#10b981', false, false);
+        playSound('heal', player.x / 5.0);
+      }
+
+      // Charge Bomb Energy (+5% per strike)
+      if (player.bombEnergy < 100) {
+        player.bombEnergy = Math.min(100, player.bombEnergy + 5);
+      }
 
       player.combos++;
-      player.comboTimer = 2.0;
-      const pitchMod = Math.min(2.2, 1.0 + player.combos * 0.08) * frenzyMultiplier;
+      player.comboTimer = 2.2;
+      const pitchMod = Math.min(2.4, 1.0 + player.combos * 0.07) * frenzyMultiplier;
       const panX = ball.x / 5.0;
 
-      triggerRumble(0.4, 0.7, 180);
+      triggerRumble(0.3, 0.6, 140);
 
       shockwaves.push({
         x: toScreenX(ball.x), y: toScreenY(ball.y), r: 10, maxR: 70, color: ball.color, alpha: 1.0
@@ -1035,7 +1263,7 @@
         gameState = 'VICTORY';
         playSound('victory');
         triggerRumble(0.6, 1.0, 400);
-        for (let k = 0; k < 50; k++) {
+        for (let k = 0; k < 60; k++) {
           spawnParticle(ARENA.x + Math.random() * ARENA.width, ARENA.y + Math.random() * ARENA.height, '#00f0ff', 4, 80, 0.15);
         }
       }
@@ -1060,7 +1288,7 @@
         }
       });
       summonState = 'WARNING';
-      summonTimer = 1.3;
+      summonTimer = 1.4; // 1.4s clear warning to dodge or bomb
       playSound('laser_warn', 0, frenzyMultiplier);
     }
 
@@ -1105,30 +1333,43 @@
       // Frenzy Speed Escalation
       const progress = 1.0 - (remainingHits / totalInitialHits);
       if (progress > 0.45) {
-        frenzyMultiplier = 1.0 + (progress - 0.45) * 0.9;
+        frenzyMultiplier = 1.0 + (progress - 0.45) * 0.85;
         frenzyLabel.textContent = `OVERDRIVE [${Math.round(frenzyMultiplier * 100)}%] 🔥`;
       } else {
         frenzyMultiplier = 1.0;
-        frenzyLabel.textContent = "60FPS ZERO-DRAG ARENA";
+        frenzyLabel.textContent = "60FPS GODMODE ARENA";
       }
 
       const curPlayerSpeed = BASE_PLAYER_SPEED * frenzyMultiplier;
       const curBallSpeed = BASE_BALL_SPEED * frenzyMultiplier;
 
+      // Cooldown & Recharge Timers
       if (player.comboTimer > 0) {
         player.comboTimer -= dt;
         if (player.comboTimer <= 0) player.combos = 0;
       }
       if (player.invulnerableTimer > 0) player.invulnerableTimer -= dt;
       if (player.hitCooldown > 0) player.hitCooldown -= dt;
-      if (player.dashCooldown > 0) player.dashCooldown -= dt;
+      if (player.beamCooldown > 0) player.beamCooldown -= dt;
+
+      // Dash Recharge (Up to 3 charges)
+      if (player.dashCharges < player.maxDashCharges) {
+        player.dashRechargeTimer += dt;
+        if (player.dashRechargeTimer >= player.dashRechargeTime) {
+          player.dashCharges++;
+          player.dashRechargeTimer = 0;
+        }
+      }
+
+      // Passive Bomb Charge
+      if (player.bombEnergy < 100) {
+        player.bombEnergy = Math.min(100, player.bombEnergy + dt * 4.0); // +4% per sec
+      }
 
       // Dash state update
       if (player.isDashing) {
         player.dashTimer -= dt;
-        if (player.dashTimer <= 0) {
-          player.isDashing = false;
-        }
+        if (player.dashTimer <= 0) player.isDashing = false;
       }
 
       // --- PLAYER CONTROLLER INPUT RESOLUTION ---
@@ -1139,7 +1380,7 @@
         // 1. Keyboard
         if (keys.left) inputX -= 1;
         if (keys.right) inputX += 1;
-        if (keys.up) inputY += 1; // Math Y is up
+        if (keys.up) inputY += 1; // Math Y is positive upwards
         if (keys.down) inputY -= 1;
 
         // 2. Mobile Touch Joystick
@@ -1152,39 +1393,58 @@
         const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
         for (const gp of gamepads) {
           if (!gp) continue;
-          // Left Analog Stick
           const axisX = gp.axes[0];
-          const axisY = -gp.axes[1]; // invert Y
-          const deadzone = 0.15;
+          const axisY = -gp.axes[1];
+          const deadzone = 0.12;
           if (Math.abs(axisX) > deadzone) inputX += axisX;
           if (Math.abs(axisY) > deadzone) inputY += axisY;
 
-          // D-Pad
           if (gp.buttons[14] && gp.buttons[14].pressed) inputX -= 1;
           if (gp.buttons[15] && gp.buttons[15].pressed) inputX += 1;
           if (gp.buttons[12] && gp.buttons[12].pressed) inputY += 1;
           if (gp.buttons[13] && gp.buttons[13].pressed) inputY -= 1;
 
-          // A / Cross button for Dash
-          if (gp.buttons[0] && gp.buttons[0].pressed) {
-            triggerDash();
+          // Right Stick Aiming (Twin-stick arcade style)
+          const rAxisX = gp.axes[2];
+          const rAxisY = -gp.axes[3];
+          if (Math.hypot(rAxisX, rAxisY) > 0.25) {
+            player.facingAng = Math.atan2(rAxisY, rAxisX);
+            if (Math.hypot(rAxisX, rAxisY) > 0.65) triggerBeam(); // auto-fire on full tilt!
           }
+
+
+          // Gamepad Buttons
+          if (gp.buttons[0] && gp.buttons[0].pressed) triggerDash();
+          if ((gp.buttons[2] && gp.buttons[2].pressed) || (gp.buttons[7] && gp.buttons[7].pressed) || (gp.buttons[5] && gp.buttons[5].pressed)) triggerBeam();
+          if ((gp.buttons[1] && gp.buttons[1].pressed) || (gp.buttons[3] && gp.buttons[3].pressed)) triggerBomb();
         }
 
-        // Apply Player Steering with Momentum / Zero-drag feel
         const inputMag = Math.hypot(inputX, inputY);
-        if (inputMag > 0.05) {
-          const normX = inputX / (inputMag > 1 ? inputMag : 1);
-          const normY = inputY / (inputMag > 1 ? inputMag : 1);
-          const accel = player.isDashing ? 18.0 : 12.0;
 
-          player.vx += normX * accel * dt;
-          player.vy += normY * accel * dt;
-        }
+        if (player.isDashing) {
+          // Locked in dashing velocity
+        } else {
+          // PRECISION VECTOR FLIGHT (Zero Sluggishness)
+          const topSpeed = curPlayerSpeed * 1.3;
+          if (inputMag > 0.08) {
+            const normX = inputX / (inputMag > 1 ? inputMag : 1);
+            const normY = inputY / (inputMag > 1 ? inputMag : 1);
+            player.facingAng = Math.atan2(normY, normX);
 
-        // Maintain constant speed unless dashing
-        if (!player.isDashing) {
-          enforceSpeed(player, curPlayerSpeed);
+            // Responsive acceleration
+            const responsiveness = 42.0;
+            player.vx += (normX * topSpeed - player.vx) * Math.min(1, responsiveness * dt);
+            player.vy += (normY * topSpeed - player.vy) * Math.min(1, responsiveness * dt);
+          } else {
+            // Precision air-brake (clean stop on release)
+            const friction = 14.0;
+            player.vx -= player.vx * Math.min(1, friction * dt);
+            player.vy -= player.vy * Math.min(1, friction * dt);
+            if (Math.hypot(player.vx, player.vy) < 0.05) {
+              player.vx = 0;
+              player.vy = 0;
+            }
+          }
         }
       } else {
         // AUTONOMOUS SPECTATOR AI
@@ -1197,30 +1457,53 @@
           }
           const dx = closest.x - player.x, dy = closest.y - player.y;
           const dist = Math.hypot(dx, dy) || 1;
-          const steer = 2.6 * frenzyMultiplier;
-          player.vx += (dx / dist) * steer * dt;
-          player.vy += (dy / dist) * steer * dt;
+          player.vx += (dx / dist) * 12.0 * dt;
+          player.vy += (dy / dist) * 12.0 * dt;
+          enforceSpeed(player, curPlayerSpeed);
+          player.facingAng = Math.atan2(player.vy, player.vx);
 
-          const noiseAng = performance.now() * 0.004;
-          player.vx += Math.cos(noiseAng) * 0.9 * dt;
-          player.vy += Math.sin(noiseAng) * 0.9 * dt;
-
-          if (summonState === 'WARNING' || summonState === 'LASER') {
-            summonCurves.forEach(c => {
-              const dc = distanceToCurve(player.x, player.y, c);
-              if (dc < 1.0) player.vy += (player.y > 0 ? 4.5 : -4.5) * dt;
-            });
-          }
+          if (Math.random() < 0.02) triggerBeam();
+          if (player.bombEnergy >= 100 && balls.length > 10) triggerBomb();
         }
-        enforceSpeed(player, curPlayerSpeed);
       }
 
+      // Move Player
       player.x += player.vx * dt;
       player.y += player.vy * dt;
-      resolveWallBounce(player, curPlayerSpeed);
+
+      // Smooth Wall Gliding (No violent bounces)
+      const prMath = (player.radius / ARENA.width) * (ARENA.xMax - ARENA.xMin);
+      if (player.x - prMath < ARENA.xMin) { player.x = ARENA.xMin + prMath; player.vx = Math.max(0, player.vx); }
+      if (player.x + prMath > ARENA.xMax) { player.x = ARENA.xMax - prMath; player.vx = Math.min(0, player.vx); }
+      if (player.y - prMath < ARENA.yMin) { player.y = ARENA.yMin + prMath; player.vy = Math.max(0, player.vy); }
+      if (player.y + prMath > ARENA.yMax) { player.y = ARENA.yMax - prMath; player.vy = Math.min(0, player.vy); }
 
       player.trail.unshift({ x: toScreenX(player.x), y: toScreenY(player.y) });
-      if (player.trail.length > 14) player.trail.pop();
+      if (player.trail.length > 16) player.trail.pop();
+
+      // Move Beams & Check Collisions
+      beamPool.forEach(b => {
+        if (!b.active) return;
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        b.life += dt;
+        if (b.life >= b.maxLife || b.x < ARENA.xMin || b.x > ARENA.xMax || b.y < ARENA.yMin || b.y > ARENA.yMax) {
+          b.active = false;
+          return;
+        }
+
+        // Beam vs Balls
+        for (let i = balls.length - 1; i >= 0; i--) {
+          const ball = balls[i];
+          const dist = Math.hypot(ball.x - b.x, ball.y - b.y);
+          const hitDist = (ball.radius / ARENA.width) * (ARENA.xMax - ARENA.xMin) * 1.2;
+          if (dist <= hitDist) {
+            b.active = false;
+            strikeAndDifferentiate(ball);
+            break;
+          }
+        }
+      });
 
       // Move Balls
       balls.forEach(b => {
@@ -1230,7 +1513,7 @@
         resolveWallBounce(b, curBallSpeed);
       });
 
-      // Rigid-body Ball vs Ball Collision
+      // Ball vs Ball Rigid Collisions
       for (let pass = 0; pass < 2; pass++) {
         for (let i = 0; i < balls.length; i++) {
           for (let j = i + 1; j < balls.length; j++) {
@@ -1239,59 +1522,57 @@
         }
       }
 
-      // Player vs Ball Collision
+      // Player vs Ball Collision (Slicing Attack / Predator)
       for (let i = balls.length - 1; i >= 0; i--) {
         const b = balls[i];
         const spx = toScreenX(player.x), spy = toScreenY(player.y);
         const sbx = toScreenX(b.x), sby = toScreenY(b.y);
         const dist = Math.hypot(spx - sbx, spy - sby);
-        const minDist = player.radius + b.radius;
+        const minDist = player.radius + b.radius + (player.isDashing ? 18 : 0);
 
         if (dist <= minDist) {
-          const overlap = minDist - dist;
-          const nx = (sbx - spx) / (dist || 1);
-          const ny = (sby - spy) / (dist || 1);
-          const overlapMath = (overlap / ARENA.width) * (ARENA.xMax - ARENA.xMin);
-
-          player.x -= nx * overlapMath * 0.5;
-          player.y += ny * overlapMath * 0.5;
-          b.x += nx * overlapMath * 0.5;
-          b.y -= ny * overlapMath * 0.5;
-
-          player.vx = -nx * curPlayerSpeed;
-          player.vy = ny * curPlayerSpeed;
-          enforceSpeed(player, curPlayerSpeed);
-
-          if (player.hitCooldown <= 0) {
+          // In Dashing Mode: Slashing Slice with zero knockback
+          if (player.isDashing) {
             strikeAndDifferentiate(b);
-            break;
+          } else {
+            // Direct operator contact: Player knocks enemy ball away!
+            const nx = (sbx - spx) / (dist || 1);
+            const ny = (sby - spy) / (dist || 1);
+
+            b.vx = nx * curBallSpeed * 1.5;
+            b.vy = -ny * curBallSpeed * 1.5;
+            enforceSpeed(b, curBallSpeed * 1.3);
+
+            if (player.hitCooldown <= 0) {
+              strikeAndDifferentiate(b);
+              break;
+            }
           }
         }
       }
 
-      // Laser Cycle
+      // Laser Hazard Cycle
       summonTimer -= dt;
       if (summonState === 'IDLE' && summonTimer <= 0) {
         startGraphSummon();
       } else if (summonState === 'WARNING' && summonTimer <= 0) {
         summonState = 'LASER';
-        summonTimer = 1.3;
+        summonTimer = 1.2;
         playSound('laser_fire', 0, frenzyMultiplier);
       } else if (summonState === 'LASER') {
-        // Player takes damage if not invulnerable and not dashing
         if (player.invulnerableTimer <= 0 && !player.isDashing) {
           for (let curve of summonCurves) {
             const dist = distanceToCurve(player.x, player.y, curve);
-            if (dist < 0.38) {
-              const dmg = Math.floor(18 + Math.random() * 8);
+            if (dist < 0.35) {
+              const dmg = Math.floor(10 + Math.random() * 5); // Balanced damage
               player.hp = Math.max(0, player.hp - dmg);
-              player.invulnerableTimer = 0.8;
-              screenShake = 12;
+              player.invulnerableTimer = 0.9;
+              screenShake = 10;
 
-              triggerRumble(0.8, 1.0, 250);
+              triggerRumble(0.7, 0.9, 200);
               playSound('player_dmg', player.x / 5.0);
               spawnPopup(`-${dmg}`, toScreenX(player.x), toScreenY(player.y) - 10, '#ff0055', true);
-              for (let k = 0; k < 15; k++) spawnParticle(toScreenX(player.x), toScreenY(player.y), '#ff0055', 3);
+              for (let k = 0; k < 12; k++) spawnParticle(toScreenX(player.x), toScreenY(player.y), '#ff0055', 2.5);
 
               if (player.hp <= 0) {
                 gameState = 'GAMEOVER';
@@ -1305,7 +1586,7 @@
         if (summonTimer <= 0) {
           summonState = 'IDLE';
           summonCurves = [];
-          summonTimer = (4.5 + Math.random() * 2.5) / frenzyMultiplier;
+          summonTimer = (4.8 + Math.random() * 2.5) / frenzyMultiplier;
         }
       }
 
@@ -1332,7 +1613,7 @@
 
       for (let i = shockwaves.length - 1; i >= 0; i--) {
         const sw = shockwaves[i];
-        sw.r += dt * 190;
+        sw.r += dt * 260;
         sw.alpha = Math.max(0, 1 - (sw.r / sw.maxR));
         if (sw.r >= sw.maxR) shockwaves.splice(i, 1);
       }
@@ -1351,6 +1632,7 @@
       drawCyberHeader();
       drawArenaGrid();
       drawLaserCurves();
+      drawBeams();
       drawShockwaves();
       drawBalls();
       drawPlayer();
@@ -1364,7 +1646,7 @@
     }
 
     function drawCyberHeader() {
-      const px = 95, py = 100, r = 38;
+      const px = 95, py = 95, r = 36;
 
       ctx.fillStyle = 'rgba(0, 240, 255, 0.08)';
       ctx.beginPath(); ctx.arc(px, py, r + 6, 0, Math.PI * 2); ctx.fill();
@@ -1382,15 +1664,14 @@
       ctx.strokeStyle = '#00f0ff'; ctx.stroke();
       ctx.fillText('dx', px, py + 13);
 
-      ctx.font = '900 12px "Segoe UI", sans-serif';
-      ctx.letterSpacing = '1px';
-      ctx.fillText(isPlayerControlled ? 'YOU (d/dx)' : 'DERIVATIVE', px, py + r + 18);
+      ctx.font = '900 11px "Segoe UI", sans-serif';
+      ctx.fillText(isPlayerControlled ? 'PILOT (YOU)' : 'DERIVATIVE', px, py + r + 16);
 
-      ctx.font = '900 36px "Segoe UI", sans-serif';
+      ctx.font = '900 32px "Segoe UI", sans-serif';
       ctx.fillStyle = '#f8fafc';
       ctx.fillText('VS', 270, py);
 
-      const bx = 445, by = 100;
+      const bx = 445, by = 95;
       let bColor = '#ff5500', bLbl = 'x³', bSub = 'CUBIC BOSS';
       if (currentMatch === 'x4') { bColor = '#c026d3'; bLbl = 'x⁴'; bSub = 'QUARTIC SWARM'; }
       else if (currentMatch === 'sin') { bColor = '#10b981'; bLbl = 'sin(x)'; bSub = 'TRIG WAVE'; }
@@ -1408,7 +1689,7 @@
       ctx.fillText(bLbl, bx, by);
 
       ctx.font = '900 11px "Segoe UI", sans-serif';
-      ctx.fillText(bSub, bx, by + r + 18);
+      ctx.fillText(bSub, bx, by + r + 16);
     }
 
     function drawArenaGrid() {
@@ -1496,12 +1777,36 @@
           ctx.lineWidth = 1.8;
           ctx.stroke();
         } else {
-          ctx.strokeStyle = 'rgba(255, 85, 0, 0.3)';
-          ctx.lineWidth = 1.4;
+          ctx.strokeStyle = 'rgba(255, 85, 0, 0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([8, 8]);
           ctx.stroke();
+          ctx.setLineDash([]);
         }
       });
       ctx.restore();
+    }
+
+    function drawBeams() {
+      beamPool.forEach(b => {
+        if (!b.active) return;
+        const sx = toScreenX(b.x), sy = toScreenY(b.y);
+        const ang = Math.atan2(b.vy, b.vx);
+        const len = 22;
+
+        ctx.save();
+        ctx.strokeStyle = '#00f0ff';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx - Math.cos(ang) * len, sy + Math.sin(ang) * len);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+      });
     }
 
     function drawShockwaves() {
@@ -1509,7 +1814,7 @@
         ctx.save();
         ctx.globalAlpha = sw.alpha;
         ctx.strokeStyle = sw.color;
-        ctx.lineWidth = 2.0;
+        ctx.lineWidth = 2.5;
         ctx.beginPath(); ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
       });
@@ -1535,23 +1840,25 @@
     function drawPlayer() {
       const sx = toScreenX(player.x), sy = toScreenY(player.y);
 
-      // Dash Cooldown Arc Indicator around Player
-      if (player.dashCooldown > 0) {
-        const pct = 1.0 - (player.dashCooldown / 1.1);
-        ctx.beginPath();
-        ctx.arc(sx, sy, player.radius + 8, -Math.PI / 2, -Math.PI / 2 + pct * Math.PI * 2);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
-        ctx.lineWidth = 2.0;
-        ctx.stroke();
-      }
+      // Facing Direction Indicator Cone
+      ctx.save();
+      const faceX = sx + Math.cos(player.facingAng) * 36;
+      const faceY = sy - Math.sin(player.facingAng) * 36;
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(faceX, faceY);
+      ctx.stroke();
+      ctx.restore();
 
       // Trail
       if (player.trail.length > 2) {
         ctx.beginPath();
         ctx.moveTo(player.trail[0].x, player.trail[0].y);
         for (let i = 1; i < player.trail.length; i++) ctx.lineTo(player.trail[i].x, player.trail[i].y);
-        ctx.strokeStyle = player.isDashing ? 'rgba(0, 240, 255, 0.8)' : 'rgba(0, 240, 255, 0.35)';
-        ctx.lineWidth = player.isDashing ? 4.0 : 2.0;
+        ctx.strokeStyle = player.isDashing ? 'rgba(0, 240, 255, 0.9)' : 'rgba(0, 240, 255, 0.35)';
+        ctx.lineWidth = player.isDashing ? 5.0 : 2.0;
         ctx.stroke();
       }
 
@@ -1560,12 +1867,12 @@
         ctx.globalAlpha = 0.4;
       }
 
-      ctx.fillStyle = player.isDashing ? 'rgba(0, 240, 255, 0.35)' : 'rgba(0, 240, 255, 0.12)';
+      ctx.fillStyle = player.isDashing ? 'rgba(0, 240, 255, 0.4)' : 'rgba(0, 240, 255, 0.12)';
       ctx.beginPath(); ctx.arc(sx, sy, player.radius + 6, 0, Math.PI * 2); ctx.fill();
 
       ctx.beginPath(); ctx.arc(sx, sy, player.radius, 0, Math.PI * 2);
       ctx.fillStyle = '#001424'; ctx.fill();
-      ctx.lineWidth = player.isDashing ? 4.0 : 2.8;
+      ctx.lineWidth = player.isDashing ? 4.5 : 2.8;
       ctx.strokeStyle = '#00f0ff';
       ctx.stroke();
 
@@ -1582,7 +1889,6 @@
     function drawTouchJoystickIndicator() {
       if (!touchJoystick.active) return;
       ctx.save();
-      // Outer Joystick Base
       ctx.beginPath();
       ctx.arc(touchJoystick.startX, touchJoystick.startY, 50, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(0, 240, 255, 0.08)';
@@ -1591,7 +1897,6 @@
       ctx.lineWidth = 2.0;
       ctx.stroke();
 
-      // Inner Stick
       const stickX = touchJoystick.startX + touchJoystick.dx * 45;
       const stickY = touchJoystick.startY + touchJoystick.dy * 45;
       ctx.beginPath();
@@ -1614,7 +1919,7 @@
           ctx.fillStyle = p.color;
           ctx.fillText(p.text, p.x, p.y);
         } else {
-          ctx.font = 'italic bold 24px "Cambria Math", serif';
+          ctx.font = 'italic bold 22px "Cambria Math", serif';
           ctx.fillStyle = p.color;
           ctx.fillText(p.text, p.x, p.y);
           if (p.fromPlayer) {
@@ -1642,26 +1947,37 @@
     }
 
     function drawBottomHUD() {
-      const barY = 720, bw = 215, bh = 22;
+      const barY = 705, bw = 215, bh = 22;
       const leftX = ARENA.x;
       const hpPct = Math.max(0, player.hp / player.maxHp);
 
+      // Player Health Bar
       ctx.fillStyle = '#111827'; ctx.fillRect(leftX, barY, bw, bh);
       ctx.fillStyle = '#00f0ff'; ctx.fillRect(leftX, barY, bw * hpPct, bh);
       ctx.fillStyle = '#000000';
       ctx.font = '900 12px "Segoe UI", sans-serif';
+      ctx.textAlign = 'center';
       ctx.fillText(`HP: ${player.hp} / ${player.maxHp}`, leftX + bw / 2, barY + bh / 2);
 
-      ctx.font = '800 12px "Segoe UI", sans-serif';
-      ctx.fillStyle = '#00f0ff';
+      // Dash & Bomb Bars
+      ctx.font = '800 11px "Segoe UI", sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(`[DIFFS: ${player.differentiations}]`, leftX, barY + bh + 18);
 
-      if (player.combos > 1) {
-        ctx.fillStyle = '#ffd700';
-        ctx.fillText(`⚡ ${player.combos}X COMBO!`, leftX + 90, barY + bh + 18);
+      // Dash Charges (3 Pips)
+      let dashTxt = `DASH: `;
+      for (let i = 0; i < player.maxDashCharges; i++) {
+        dashTxt += (i < player.dashCharges ? '⚡ ' : '○ ');
       }
+      ctx.fillStyle = player.dashCharges > 0 ? '#00f0ff' : '#64748b';
+      ctx.fillText(dashTxt, leftX, barY + bh + 16);
 
+      // Super Bomb Meter
+      const bombReady = (player.bombEnergy >= 100);
+      ctx.fillStyle = bombReady ? '#ffd700' : '#ff0055';
+      const bombTxt = bombReady ? `💥 BOMB [READY]` : `💥 BOMB [${Math.floor(player.bombEnergy)}%]`;
+      ctx.fillText(bombTxt, leftX + 115, barY + bh + 16);
+
+      // Enemy Hits Bar
       const rightX = ARENA.x + ARENA.width - bw;
       const remPct = Math.max(0, remainingHits / totalInitialHits);
       ctx.fillStyle = '#111827'; ctx.fillRect(rightX, barY, bw, bh);
@@ -1672,11 +1988,11 @@
 
       ctx.textAlign = 'right';
       if (gameState === 'COUNTDOWN') {
-        ctx.fillStyle = '#64748b'; ctx.fillText('[SYSTEM: READY]', rightX + bw, barY + bh + 18);
+        ctx.fillStyle = '#64748b'; ctx.fillText('[SYSTEM: READY]', rightX + bw, barY + bh + 16);
       } else if (summonState === 'WARNING' || summonState === 'LASER') {
-        ctx.fillStyle = '#ff5500'; ctx.fillText('[LASER WARNING!]', rightX + bw, barY + bh + 18);
+        ctx.fillStyle = '#ff5500'; ctx.fillText('[LASER WARNING!]', rightX + bw, barY + bh + 16);
       } else {
-        ctx.fillStyle = '#94a3b8'; ctx.fillText(`[ACTIVE ORBS: ${balls.length}]`, rightX + bw, barY + bh + 18);
+        ctx.fillStyle = '#94a3b8'; ctx.fillText(`[ACTIVE ORBS: ${balls.length}]`, rightX + bw, barY + bh + 16);
       }
     }
 
@@ -1750,7 +2066,7 @@
     btnAudio.addEventListener('click', () => {
       audioEnabled = !audioEnabled;
       btnAudio.textContent = audioEnabled ? '🔊 ON' : '🔇 OFF';
-      btnAudio.classList.toggle('active', !audioEnabled);
+      btnAudio.style.opacity = audioEnabled ? '1.0' : '0.6';
     });
 
     speedButtons.forEach(btn => {
@@ -1765,11 +2081,11 @@
       tab.addEventListener('click', () => {
         rosterTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        initAudio();
         resetGame(tab.dataset.match);
       });
     });
 
+    // Start Simulation
     resetGame('x3');
     requestAnimationFrame(gameLoop);
   </script>
