@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MATH BATTLE: d/dx Calculus Showdown</title>
-  <meta name="description" content="Autonomous Zero-Gravity Calculus Marble Battle Simulator. High-speed, addictive, potato-friendly OLED black edition.">
+  <title>MATH BATTLE: d/dx Calculus Showdown [CONTROLLER & ARCADE EDITION]</title>
+  <meta name="description" content="Take control of d/dx! Full Gamepad, Virtual Joystick, and Keyboard support in an OLED Black Calculus Arena.">
   <meta name="theme-color" content="#000000">
   <style>
     * {
@@ -17,12 +17,13 @@
     }
     :root {
       --bg: #000000;
-      --card: #05070e;
+      --card: #04060d;
       --cyan: #00f0ff;
       --orange: #ff5500;
       --gold: #ffd700;
       --purple: #c026d3;
       --green: #10b981;
+      --red: #ff0055;
       --border: rgba(255, 255, 255, 0.08);
     }
     body {
@@ -39,7 +40,7 @@
     }
     .app-shell {
       width: 100%;
-      max-width: 480px;
+      max-width: 490px;
       background: var(--card);
       border-radius: 20px;
       box-shadow: 0 0 50px rgba(0, 240, 255, 0.12), 0 0 0 1px var(--border);
@@ -77,34 +78,115 @@
       border-color: var(--cyan);
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
     }
-    /* Telemetry Header */
-    .telemetry-bar {
+    /* Control Mode Switch (Player vs Auto) */
+    .pilot-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 14px;
-      background: #020409;
+      padding: 6px 12px;
+      background: #02040a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .pilot-toggle-group {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .pilot-toggle-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #64748b;
       font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.8px;
-      color: #64748b;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .telemetry-val {
-      color: var(--cyan);
+    .pilot-toggle-btn.active {
+      background: var(--cyan);
+      color: #000000;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
     }
-    /* Canvas */
+    .controller-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pad-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    /* Viewport */
     .viewport {
       position: relative;
       width: 100%;
       aspect-ratio: 9 / 16;
       background: #000000;
       touch-action: none;
+      overflow: hidden;
     }
     canvas {
       width: 100%;
       height: 100%;
       display: block;
+    }
+    /* Mobile Touch Overlay Controls */
+    .touch-controls {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 16px;
+    }
+    .touch-btn {
+      pointer-events: auto;
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: rgba(0, 240, 255, 0.12);
+      border: 2px solid var(--cyan);
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      transition: all 0.1s ease;
+    }
+    .touch-btn:active, .touch-btn.active {
+      transform: scale(0.92);
+      background: var(--cyan);
+      color: #000000;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+    }
+    .touch-stick-area {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50%;
+      height: 50%;
+      pointer-events: auto;
+      touch-action: none;
     }
     /* Control Deck */
     .deck {
@@ -148,9 +230,9 @@
       color: #000000;
       border: none;
       box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
-      flex: 1.4;
+      flex: 1.2;
     }
-    .btn-turbo {
+    .btn-action {
       background: linear-gradient(135deg, #ff0055, #ff5500);
       color: #ffffff;
       border: none;
@@ -161,16 +243,15 @@
       color: var(--cyan);
       border-color: var(--cyan);
     }
-    .info-footer {
+    .hud-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 10px;
       color: #64748b;
       font-weight: 700;
-      padding-top: 2px;
     }
-    .frenzy-tag {
+    .frenzy-pill {
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -182,24 +263,13 @@
       font-weight: 900;
       font-size: 9px;
     }
-    .pulse-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--orange);
-      box-shadow: 0 0 6px var(--orange);
-      animation: blink 0.8s infinite alternate;
-    }
-    @keyframes blink {
-      from { opacity: 0.3; }
-      to { opacity: 1; }
-    }
-    .hint-text {
+    .guide-box {
       text-align: center;
       font-size: 10px;
-      color: #475569;
+      color: #64748b;
       padding: 4px;
-      letter-spacing: 0.3px;
+      background: #010205;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
     }
   </style>
 </head>
@@ -214,40 +284,57 @@
       <button class="roster-btn" data-match="exp">d/dx VS eˣ [IMMORTAL]</button>
     </div>
 
-    <!-- Live Telemetry Bar -->
-    <div class="telemetry-bar">
-      <span>ORDER: <span id="telOrder" class="telemetry-val">f'(x)</span></span>
-      <span>RATE: <span id="telRate" class="telemetry-val">0.0 dN/s</span></span>
-      <span>STATUS: <span id="telStatus" class="telemetry-val">AUTONOMOUS</span></span>
+    <!-- Pilot Control Bar -->
+    <div class="pilot-bar">
+      <div class="pilot-toggle-group">
+        <button id="pilotPlayer" class="pilot-toggle-btn active">🎮 YOU ARE d/dx</button>
+        <button id="pilotAuto" class="pilot-toggle-btn">🤖 AUTO AI</button>
+      </div>
+
+      <div class="controller-badge">
+        <span class="pad-dot" id="padDot"></span>
+        <span id="padStatus">KEYBOARD / TOUCH ACTIVE</span>
+      </div>
     </div>
 
     <!-- Canvas Viewport -->
-    <div class="viewport">
+    <div class="viewport" id="viewport">
       <canvas id="gameCanvas" width="540" height="960"></canvas>
+
+      <!-- On-Screen Mobile Touch Joystick & Dash Overlay -->
+      <div class="touch-stick-area" id="touchStickArea"></div>
+      <div class="touch-controls">
+        <div></div>
+        <button class="touch-btn" id="touchDashBtn">
+          <span>⚡ DASH</span>
+          <span style="font-size: 8px; opacity: 0.8;">[SPACE]</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Interactive Hint -->
-    <div class="hint-text">💡 TAP ARENA TO DROP GRAVITY SINGULARITY • HOLD TURBO FOR 3X WARP</div>
+    <!-- Instructions Guide Bar -->
+    <div class="guide-box">
+      🎮 CONTROLLER: <b>LEFT STICK</b> = MOVE • <b>A / CROSS</b> = DASH • <b>KEYBOARD:</b> WASD / ARROWS + SPACEBAR
+    </div>
 
     <!-- Controls Deck -->
     <div class="deck">
       <div class="action-row">
-        <button id="btnStart" class="btn btn-primary">▶ START MATCH</button>
-        <button id="btnTurbo" class="btn btn-turbo">⚡ TURBO 3X</button>
-        <button id="btnRestart" class="btn">🔄 RE-ROLL</button>
+        <button id="btnStart" class="btn btn-primary">▶ START BATTLE</button>
+        <button id="btnRestart" class="btn">🔄 RE-ROLL (SEED)</button>
         <button id="btnAudio" class="btn">🔊 ON</button>
       </div>
 
-      <div class="info-footer">
+      <div class="hud-meta">
         <div class="action-row" style="gap: 4px;">
           <button class="btn btn-speed active" data-speed="1">1X</button>
           <button class="btn btn-speed" data-speed="1.5">1.5X</button>
           <button class="btn btn-speed" data-speed="2">2X</button>
         </div>
 
-        <div class="frenzy-tag" id="frenzyTag">
-          <span class="pulse-dot"></span>
-          <span id="frenzyLabel">ZERO-DRAG BILLIARD AI</span>
+        <div class="frenzy-pill" id="frenzyTag">
+          <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--orange);"></span>
+          <span id="frenzyLabel">60FPS ZERO-DRAG ARENA</span>
         </div>
       </div>
     </div>
@@ -255,34 +342,35 @@
 
   <script>
     /* ==========================================================
-       MATH BATTLE: d/dx CALCULUS SHOWDOWN [EXTREME PERFORMANCE EDITION]
-       Engineered for 60FPS on potato mobile devices and laptops:
-       - No shadowBlur in hot render loops (Fast concentric halo arcs)
-       - Zero-allocation Object Pooling for Particles & Popups
-       - Multi-Battle Roster: x³, x⁴ Chaos, sin(x), eˣ Immortal
-       - Haptic Feedback (navigator.vibrate)
-       - Interactive Singularity Gravity Wells
-       - True Rigid-Body Elastic Circle Collision (Zero Penetration)
-       - Spatial Stereo Web Audio Synthesizer
+       MATH BATTLE: d/dx ARCADE SHOWDOWN [CONTROLLER EDITION]
+       Features:
+       - Full Gamepad API (DualShock, DualSense, Xbox, Generic)
+       - Virtual Touch Joystick + On-screen Dash Button
+       - Fluid Physics with Acceleration, Inertia, and Dash Phase Shift
+       - True Elastic Marble-to-Marble Collisions (No Overlap)
+       - 60FPS Optimization: Object Pooling + Fast Geometric Halos
+       - Spatial Stereo Web Audio Synthesizer + Haptic Rumble
        ========================================================== */
 
     const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d', { alpha: false }); // High performance non-alpha canvas
+    const ctx = canvas.getContext('2d', { alpha: false });
 
     const btnStart = document.getElementById('btnStart');
-    const btnTurbo = document.getElementById('btnTurbo');
     const btnRestart = document.getElementById('btnRestart');
     const btnAudio = document.getElementById('btnAudio');
     const speedButtons = document.querySelectorAll('.btn-speed');
     const rosterTabs = document.querySelectorAll('.roster-btn');
-    const telOrder = document.getElementById('telOrder');
-    const telRate = document.getElementById('telRate');
-    const telStatus = document.getElementById('telStatus');
+    const pilotPlayer = document.getElementById('pilotPlayer');
+    const pilotAuto = document.getElementById('pilotAuto');
+    const padStatus = document.getElementById('padStatus');
+    const padDot = document.getElementById('padDot');
     const frenzyLabel = document.getElementById('frenzyLabel');
+    const touchDashBtn = document.getElementById('touchDashBtn');
+    const touchStickArea = document.getElementById('touchStickArea');
 
     let currentMatch = 'x3';
+    let isPlayerControlled = true; // Default: YOU ARE d/dx!
     let simSpeed = 1.0;
-    let turboActive = false;
     let audioEnabled = true;
     let isRunning = true;
 
@@ -305,7 +393,7 @@
       return ARENA.y + ((ARENA.yMax - y) / (ARENA.yMax - ARENA.yMin)) * ARENA.height;
     }
 
-    /* ---------------- Lightweight Spatial Web Audio Synth ---------------- */
+    /* ---------------- Audio & Haptic Feedback ---------------- */
     let audioCtx = null;
     let lastAudioTime = { wall: 0, ball: 0 };
 
@@ -319,14 +407,23 @@
       }
     }
 
-    function triggerHaptic(type) {
-      if (!navigator.vibrate) return;
-      try {
-        if (type === 'clack') navigator.vibrate(8);
-        else if (type === 'strike') navigator.vibrate(25);
-        else if (type === 'laser') navigator.vibrate([30, 20, 30]);
-        else if (type === 'victory') navigator.vibrate([40, 30, 60, 40, 80]);
-      } catch (e) {}
+    function triggerRumble(weakIntensity = 0.3, strongIntensity = 0.5, duration = 150) {
+      // 1. Mobile browser haptic
+      if (navigator.vibrate) {
+        navigator.vibrate(Math.min(100, duration));
+      }
+      // 2. Physical Gamepad Rumble
+      const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+      for (const gp of gamepads) {
+        if (gp && gp.vibrationActuator && gp.vibrationActuator.playEffect) {
+          gp.vibrationActuator.playEffect("dual-rumble", {
+            startDelay: 0,
+            duration: duration,
+            weakMagnitude: weakIntensity,
+            strongMagnitude: strongIntensity
+          }).catch(() => {});
+        }
+      }
     }
 
     function playSound(type, panX = 0, pitchMod = 1.0) {
@@ -376,12 +473,24 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(650 * pitchMod, now);
           osc.frequency.exponentialRampToValueAtTime(1300 * pitchMod, now + 0.18);
-          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.setValueAtTime(0.32, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
           osc.connect(gain);
           gain.connect(dest);
           osc.start(now);
           osc.stop(now + 0.2);
+        } else if (type === 'dash') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(now);
+          osc.stop(now + 0.15);
         } else if (type === 'laser_warn') {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -429,18 +538,6 @@
           gain.connect(dest);
           osc.start(now);
           osc.stop(now + 0.16);
-        } else if (type === 'singularity') {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(120, now);
-          osc.frequency.exponentialRampToValueAtTime(450, now + 0.3);
-          gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-          osc.connect(gain);
-          gain.connect(dest);
-          osc.start(now);
-          osc.stop(now + 0.3);
         } else if (type === 'victory') {
           [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((f, idx) => {
             const osc = audioCtx.createOscillator();
@@ -457,6 +554,115 @@
         }
       } catch (e) {}
     }
+
+    /* ---------------- Input Subsystems: Gamepad, Touch, Keyboard ---------------- */
+    const keys = {
+      up: false, down: false, left: false, right: false, dash: false
+    };
+
+    window.addEventListener('keydown', (e) => {
+      initAudio();
+      if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.up = true;
+      if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.down = true;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+      if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        e.preventDefault();
+        triggerDash();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.up = false;
+      if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.down = false;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+    });
+
+    // Gamepad Connection Listeners
+    window.addEventListener("gamepadconnected", (e) => {
+      initAudio();
+      padStatus.textContent = `PAD CONNECTED: ${e.gamepad.id.substring(0, 16).toUpperCase()}`;
+      padDot.style.background = '#00f0ff';
+      padDot.style.boxShadow = '0 0 10px #00f0ff';
+      triggerRumble(0.4, 0.6, 200);
+    });
+
+    window.addEventListener("gamepaddisconnected", () => {
+      padStatus.textContent = "KEYBOARD / TOUCH ACTIVE";
+      padDot.style.background = '#10b981';
+      padDot.style.boxShadow = '0 0 8px #10b981';
+    });
+
+    // Touch Virtual Joystick
+    let touchJoystick = {
+      active: false,
+      identifier: null,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+      dx: 0,
+      dy: 0
+    };
+
+    touchStickArea.addEventListener('touchstart', (e) => {
+      initAudio();
+      if (touchJoystick.active) return;
+      const touch = e.changedTouches[0];
+      touchJoystick.active = true;
+      touchJoystick.identifier = touch.identifier;
+      const rect = canvas.getBoundingClientRect();
+      touchJoystick.startX = ((touch.clientX - rect.left) / rect.width) * canvas.width;
+      touchJoystick.startY = ((touch.clientY - rect.top) / rect.height) * canvas.height;
+      touchJoystick.currentX = touchJoystick.startX;
+      touchJoystick.currentY = touchJoystick.startY;
+      touchJoystick.dx = 0;
+      touchJoystick.dy = 0;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!touchJoystick.active) return;
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        const touch = e.changedTouches[i];
+        if (touch.identifier === touchJoystick.identifier) {
+          const rect = canvas.getBoundingClientRect();
+          touchJoystick.currentX = ((touch.clientX - rect.left) / rect.width) * canvas.width;
+          touchJoystick.currentY = ((touch.clientY - rect.top) / rect.height) * canvas.height;
+          const maxDist = 65;
+          const rx = touchJoystick.currentX - touchJoystick.startX;
+          const ry = touchJoystick.currentY - touchJoystick.startY;
+          const dist = Math.hypot(rx, ry);
+          if (dist > maxDist) {
+            touchJoystick.dx = (rx / dist);
+            touchJoystick.dy = (ry / dist);
+          } else {
+            touchJoystick.dx = rx / maxDist;
+            touchJoystick.dy = ry / maxDist;
+          }
+          break;
+        }
+      }
+    });
+
+    window.addEventListener('touchend', (e) => {
+      if (!touchJoystick.active) return;
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        if (e.changedTouches[i].identifier === touchJoystick.identifier) {
+          touchJoystick.active = false;
+          touchJoystick.identifier = null;
+          touchJoystick.dx = 0;
+          touchJoystick.dy = 0;
+          break;
+        }
+      }
+    });
+
+    touchDashBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      initAudio();
+      triggerDash();
+    });
 
     /* ---------------- Zero-Allocation Object Pools ---------------- */
     const MAX_PARTICLES = 120;
@@ -506,7 +712,7 @@
     let countdownTimer = 3.6;
     let countdownStepPlayed = { 3: false, 2: false, 1: false, fight: false };
 
-    let BASE_PLAYER_SPEED = 2.8;
+    let BASE_PLAYER_SPEED = 3.2; // Fluid player speed
     let BASE_BALL_SPEED = 2.6;
     let frenzyMultiplier = 1.0;
 
@@ -515,6 +721,8 @@
       y: 1.8,
       vx: 1.8,
       vy: -1.2,
+      ax: 0,
+      ay: 0,
       radius: 26,
       maxHp: 100,
       hp: 100,
@@ -523,6 +731,9 @@
       comboTimer: 0,
       invulnerableTimer: 0,
       hitCooldown: 0,
+      dashCooldown: 0,
+      isDashing: false,
+      dashTimer: 0,
       trail: []
     };
 
@@ -536,8 +747,30 @@
     let summonCurves = [];
 
     let shockwaves = [];
-    let singularity = null; // { x, y, life, maxLife }
     let screenShake = 0;
+
+    function triggerDash() {
+      if (player.dashCooldown > 0) return;
+      player.isDashing = true;
+      player.dashTimer = 0.22; // 0.22s high-speed invulnerable phase
+      player.dashCooldown = 1.1; // 1.1s recharge
+      player.invulnerableTimer = 0.3;
+
+      // Burst velocity forward along current direction
+      let curSpd = Math.hypot(player.vx, player.vy);
+      if (curSpd > 0.01) {
+        player.vx = (player.vx / curSpd) * (BASE_PLAYER_SPEED * 2.8);
+        player.vy = (player.vy / curSpd) * (BASE_PLAYER_SPEED * 2.8);
+      }
+
+      playSound('dash', player.x / 5.0);
+      triggerRumble(0.2, 0.4, 100);
+
+      // Dash ghost particles
+      for (let i = 0; i < 15; i++) {
+        spawnParticle(toScreenX(player.x), toScreenY(player.y), '#00f0ff', 2.0);
+      }
+    }
 
     function resetGame(matchType = currentMatch) {
       currentMatch = matchType;
@@ -557,6 +790,8 @@
       player.comboTimer = 0;
       player.invulnerableTimer = 0;
       player.hitCooldown = 0;
+      player.dashCooldown = 0;
+      player.isDashing = false;
       player.trail = [];
 
       balls = [];
@@ -565,14 +800,12 @@
       popupPool.forEach(p => p.active = false);
       shockwaves = [];
       summonCurves = [];
-      singularity = null;
       screenShake = 0;
 
       if (matchType === 'x3') {
         totalInitialHits = 16;
         remainingHits = 16;
         summonTimer = 5.0;
-        telOrder.textContent = "f'(x)";
         const bAng = Math.random() * Math.PI * 2;
         balls.push({
           id: nextBallId++, type: 'x3', label: 'x³', power: 3, x: -1.2, y: -1.8,
@@ -583,7 +816,6 @@
         totalInitialHits = 65;
         remainingHits = 65;
         summonTimer = 4.2;
-        telOrder.textContent = "f^(4)(x)";
         const bAng = Math.random() * Math.PI * 2;
         balls.push({
           id: nextBallId++, type: 'x4', label: 'x⁴', power: 4, x: -1.0, y: -1.5,
@@ -594,7 +826,6 @@
         totalInitialHits = 20;
         remainingHits = 20;
         summonTimer = 4.0;
-        telOrder.textContent = "sin/cos";
         const bAng = Math.random() * Math.PI * 2;
         balls.push({
           id: nextBallId++, type: 'sin', label: 'sin(x)', power: 3, x: -1.0, y: -1.5,
@@ -605,7 +836,6 @@
         totalInitialHits = 15;
         remainingHits = 15;
         summonTimer = 3.8;
-        telOrder.textContent = "eˣ (IMMORTAL)";
         const bAng = Math.random() * Math.PI * 2;
         balls.push({
           id: nextBallId++, type: 'exp', label: 'eˣ', power: 5, x: -1.0, y: -1.5,
@@ -661,7 +891,6 @@
       const minDist = b1.radius + b2.radius;
 
       if (dist < minDist && dist > 0.0001) {
-        // Anti-overlap push
         const overlap = minDist - dist;
         const nx = dx / dist;
         const ny = dy / dist;
@@ -672,7 +901,6 @@
         b2.x += nx * (overlapMath * 0.5);
         b2.y -= ny * (overlapMath * 0.5);
 
-        // Momentum transfer
         const mdx = b2.x - b1.x;
         const mdy = b2.y - b1.y;
         const mdist = Math.hypot(mdx, mdy) || 1;
@@ -690,16 +918,10 @@
         enforceSpeed(b2, targetSpeed);
 
         playSound('ball_clack', (b1.x + b2.x) / 10.0, frenzyMultiplier);
-        triggerHaptic('clack');
       }
     }
 
-    /* ---------------- Combat & Calculus Differentiation ---------------- */
-    const COMBO_TITLES = [
-      '', 'DERIVATIVE HIT!', 'LEIBNIZ FLOW! ⚡', 'EULER RAMPAGE! 🔥',
-      'RAMANUJAN TRANSCENDENCE! 💫', 'CALCULUS SINGULARITY! ⚡⚡'
-    ];
-
+    /* ---------------- Differentiation & Combat Execution ---------------- */
     function strikeAndDifferentiate(ball) {
       player.differentiations++;
       remainingHits = Math.max(0, remainingHits - 1);
@@ -707,13 +929,11 @@
 
       player.combos++;
       player.comboTimer = 2.0;
-      const comboTier = Math.min(COMBO_TITLES.length - 1, Math.floor(player.combos / 2));
       const pitchMod = Math.min(2.2, 1.0 + player.combos * 0.08) * frenzyMultiplier;
       const panX = ball.x / 5.0;
 
-      triggerHaptic('strike');
+      triggerRumble(0.4, 0.7, 180);
 
-      // Shockwave
       shockwaves.push({
         x: toScreenX(ball.x), y: toScreenY(ball.y), r: 10, maxR: 70, color: ball.color, alpha: 1.0
       });
@@ -774,9 +994,7 @@
       } else if (ball.type === '1') {
         playSound('pop_zero', panX, pitchMod);
         spawnPopup('0', toScreenX(ball.x), toScreenY(ball.y), '#10b981', false, true);
-        for (let k = 0; k < 18; k++) {
-          spawnParticle(toScreenX(ball.x), toScreenY(ball.y), '#ffd700', 3);
-        }
+        for (let k = 0; k < 18; k++) spawnParticle(toScreenX(ball.x), toScreenY(ball.y), '#ffd700', 3);
       } else if (ball.type === 'sin' || ball.type === 'cos' || ball.type === '-sin' || ball.type === '-cos') {
         playSound('diff_strike', panX, pitchMod);
         const nextTrigMap = {
@@ -816,7 +1034,7 @@
       if (remainingHits <= 0 || balls.length === 0) {
         gameState = 'VICTORY';
         playSound('victory');
-        triggerHaptic('victory');
+        triggerRumble(0.6, 1.0, 400);
         for (let k = 0; k < 50; k++) {
           spawnParticle(ARENA.x + Math.random() * ARENA.width, ARENA.y + Math.random() * ARENA.height, '#00f0ff', 4, 80, 0.15);
         }
@@ -860,18 +1078,9 @@
 
     /* ---------------- Master Update Loop ---------------- */
     let lastTimestamp = performance.now();
-    let diffRateCounter = 0;
-    let diffRateTimer = 0;
 
     function update(dt) {
       if (screenShake > 0) screenShake -= dt * 30;
-
-      diffRateTimer += dt;
-      if (diffRateTimer >= 1.0) {
-        telRate.textContent = `${diffRateCounter} dN/s`;
-        diffRateCounter = 0;
-        diffRateTimer = 0;
-      }
 
       if (gameState === 'COUNTDOWN') {
         countdownTimer -= dt;
@@ -898,16 +1107,13 @@
       if (progress > 0.45) {
         frenzyMultiplier = 1.0 + (progress - 0.45) * 0.9;
         frenzyLabel.textContent = `OVERDRIVE [${Math.round(frenzyMultiplier * 100)}%] 🔥`;
-        telStatus.textContent = "FRENZY WARP";
       } else {
         frenzyMultiplier = 1.0;
-        frenzyLabel.textContent = "ZERO-DRAG BILLIARD AI";
-        telStatus.textContent = "AUTONOMOUS";
+        frenzyLabel.textContent = "60FPS ZERO-DRAG ARENA";
       }
 
-      const warp = turboActive ? 3.0 : 1.0;
-      const curPlayerSpeed = BASE_PLAYER_SPEED * frenzyMultiplier * warp;
-      const curBallSpeed = BASE_BALL_SPEED * frenzyMultiplier * warp;
+      const curPlayerSpeed = BASE_PLAYER_SPEED * frenzyMultiplier;
+      const curBallSpeed = BASE_BALL_SPEED * frenzyMultiplier;
 
       if (player.comboTimer > 0) {
         player.comboTimer -= dt;
@@ -915,63 +1121,106 @@
       }
       if (player.invulnerableTimer > 0) player.invulnerableTimer -= dt;
       if (player.hitCooldown > 0) player.hitCooldown -= dt;
+      if (player.dashCooldown > 0) player.dashCooldown -= dt;
 
-      // Singularity Gravitational Pull
-      if (singularity) {
-        singularity.life -= dt;
-        const sMathX = (singularity.x - ARENA.x) / ARENA.width * (ARENA.xMax - ARENA.xMin) + ARENA.xMin;
-        const sMathY = ARENA.yMax - (singularity.y - ARENA.y) / ARENA.height * (ARENA.yMax - ARENA.yMin);
-
-        // Pull player and balls
-        const pdx = sMathX - player.x, pdy = sMathY - player.y;
-        const pdist = Math.hypot(pdx, pdy) || 1;
-        player.vx += (pdx / pdist) * 8.0 * dt;
-        player.vy += (pdy / pdist) * 8.0 * dt;
-
-        balls.forEach(b => {
-          const bdx = sMathX - b.x, bdy = sMathY - b.y;
-          const bdist = Math.hypot(bdx, bdy) || 1;
-          b.vx += (bdx / bdist) * 7.0 * dt;
-          b.vy += (bdy / bdist) * 7.0 * dt;
-        });
-
-        if (singularity.life <= 0) singularity = null;
-      }
-
-      // Autonomous AI Steering
-      if (balls.length > 0) {
-        let closest = balls[0];
-        let minDist = Math.hypot(closest.x - player.x, closest.y - player.y);
-        for (let i = 1; i < balls.length; i++) {
-          const d = Math.hypot(balls[i].x - player.x, balls[i].y - player.y);
-          if (d < minDist) { minDist = d; closest = balls[i]; }
-        }
-
-        const dx = closest.x - player.x, dy = closest.y - player.y;
-        const dist = Math.hypot(dx, dy) || 1;
-        const steer = 2.6 * frenzyMultiplier;
-        player.vx += (dx / dist) * steer * dt;
-        player.vy += (dy / dist) * steer * dt;
-
-        const noiseAng = performance.now() * 0.004;
-        player.vx += Math.cos(noiseAng) * 0.9 * dt;
-        player.vy += Math.sin(noiseAng) * 0.9 * dt;
-
-        if (summonState === 'WARNING' || summonState === 'LASER') {
-          summonCurves.forEach(c => {
-            const dc = distanceToCurve(player.x, player.y, c);
-            if (dc < 1.0) player.vy += (player.y > 0 ? 4.5 : -4.5) * dt;
-          });
+      // Dash state update
+      if (player.isDashing) {
+        player.dashTimer -= dt;
+        if (player.dashTimer <= 0) {
+          player.isDashing = false;
         }
       }
 
-      enforceSpeed(player, curPlayerSpeed);
+      // --- PLAYER CONTROLLER INPUT RESOLUTION ---
+      if (isPlayerControlled) {
+        let inputX = 0;
+        let inputY = 0;
+
+        // 1. Keyboard
+        if (keys.left) inputX -= 1;
+        if (keys.right) inputX += 1;
+        if (keys.up) inputY += 1; // Math Y is up
+        if (keys.down) inputY -= 1;
+
+        // 2. Mobile Touch Joystick
+        if (touchJoystick.active) {
+          inputX += touchJoystick.dx;
+          inputY -= touchJoystick.dy; // invert screen Y to math Y
+        }
+
+        // 3. Physical Gamepad Polling
+        const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+        for (const gp of gamepads) {
+          if (!gp) continue;
+          // Left Analog Stick
+          const axisX = gp.axes[0];
+          const axisY = -gp.axes[1]; // invert Y
+          const deadzone = 0.15;
+          if (Math.abs(axisX) > deadzone) inputX += axisX;
+          if (Math.abs(axisY) > deadzone) inputY += axisY;
+
+          // D-Pad
+          if (gp.buttons[14] && gp.buttons[14].pressed) inputX -= 1;
+          if (gp.buttons[15] && gp.buttons[15].pressed) inputX += 1;
+          if (gp.buttons[12] && gp.buttons[12].pressed) inputY += 1;
+          if (gp.buttons[13] && gp.buttons[13].pressed) inputY -= 1;
+
+          // A / Cross button for Dash
+          if (gp.buttons[0] && gp.buttons[0].pressed) {
+            triggerDash();
+          }
+        }
+
+        // Apply Player Steering with Momentum / Zero-drag feel
+        const inputMag = Math.hypot(inputX, inputY);
+        if (inputMag > 0.05) {
+          const normX = inputX / (inputMag > 1 ? inputMag : 1);
+          const normY = inputY / (inputMag > 1 ? inputMag : 1);
+          const accel = player.isDashing ? 18.0 : 12.0;
+
+          player.vx += normX * accel * dt;
+          player.vy += normY * accel * dt;
+        }
+
+        // Maintain constant speed unless dashing
+        if (!player.isDashing) {
+          enforceSpeed(player, curPlayerSpeed);
+        }
+      } else {
+        // AUTONOMOUS SPECTATOR AI
+        if (balls.length > 0) {
+          let closest = balls[0];
+          let minDist = Math.hypot(closest.x - player.x, closest.y - player.y);
+          for (let i = 1; i < balls.length; i++) {
+            const d = Math.hypot(balls[i].x - player.x, balls[i].y - player.y);
+            if (d < minDist) { minDist = d; closest = balls[i]; }
+          }
+          const dx = closest.x - player.x, dy = closest.y - player.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          const steer = 2.6 * frenzyMultiplier;
+          player.vx += (dx / dist) * steer * dt;
+          player.vy += (dy / dist) * steer * dt;
+
+          const noiseAng = performance.now() * 0.004;
+          player.vx += Math.cos(noiseAng) * 0.9 * dt;
+          player.vy += Math.sin(noiseAng) * 0.9 * dt;
+
+          if (summonState === 'WARNING' || summonState === 'LASER') {
+            summonCurves.forEach(c => {
+              const dc = distanceToCurve(player.x, player.y, c);
+              if (dc < 1.0) player.vy += (player.y > 0 ? 4.5 : -4.5) * dt;
+            });
+          }
+        }
+        enforceSpeed(player, curPlayerSpeed);
+      }
+
       player.x += player.vx * dt;
       player.y += player.vy * dt;
       resolveWallBounce(player, curPlayerSpeed);
 
       player.trail.unshift({ x: toScreenX(player.x), y: toScreenY(player.y) });
-      if (player.trail.length > 12) player.trail.pop();
+      if (player.trail.length > 14) player.trail.pop();
 
       // Move Balls
       balls.forEach(b => {
@@ -1014,7 +1263,6 @@
           enforceSpeed(player, curPlayerSpeed);
 
           if (player.hitCooldown <= 0) {
-            diffRateCounter++;
             strikeAndDifferentiate(b);
             break;
           }
@@ -1030,7 +1278,8 @@
         summonTimer = 1.3;
         playSound('laser_fire', 0, frenzyMultiplier);
       } else if (summonState === 'LASER') {
-        if (player.invulnerableTimer <= 0) {
+        // Player takes damage if not invulnerable and not dashing
+        if (player.invulnerableTimer <= 0 && !player.isDashing) {
           for (let curve of summonCurves) {
             const dist = distanceToCurve(player.x, player.y, curve);
             if (dist < 0.38) {
@@ -1039,7 +1288,7 @@
               player.invulnerableTimer = 0.8;
               screenShake = 12;
 
-              triggerHaptic('laser');
+              triggerRumble(0.8, 1.0, 250);
               playSound('player_dmg', player.x / 5.0);
               spawnPopup(`-${dmg}`, toScreenX(player.x), toScreenY(player.y) - 10, '#ff0055', true);
               for (let k = 0; k < 15; k++) spawnParticle(toScreenX(player.x), toScreenY(player.y), '#ff0055', 3);
@@ -1096,17 +1345,16 @@
         ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
       }
 
-      // Fast OLED Black Fill
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       drawCyberHeader();
       drawArenaGrid();
       drawLaserCurves();
-      drawSingularity();
       drawShockwaves();
       drawBalls();
       drawPlayer();
+      drawTouchJoystickIndicator();
       drawPopups();
       drawParticles();
       drawBottomHUD();
@@ -1118,7 +1366,6 @@
     function drawCyberHeader() {
       const px = 95, py = 100, r = 38;
 
-      // Player Ring (Concentric Circle Halo - 0% GPU Lag)
       ctx.fillStyle = 'rgba(0, 240, 255, 0.08)';
       ctx.beginPath(); ctx.arc(px, py, r + 6, 0, Math.PI * 2); ctx.fill();
 
@@ -1137,14 +1384,12 @@
 
       ctx.font = '900 12px "Segoe UI", sans-serif';
       ctx.letterSpacing = '1px';
-      ctx.fillText('DERIVATIVE', px, py + r + 18);
+      ctx.fillText(isPlayerControlled ? 'YOU (d/dx)' : 'DERIVATIVE', px, py + r + 18);
 
-      // VS
       ctx.font = '900 36px "Segoe UI", sans-serif';
       ctx.fillStyle = '#f8fafc';
       ctx.fillText('VS', 270, py);
 
-      // Boss Avatar
       const bx = 445, by = 100;
       let bColor = '#ff5500', bLbl = 'x³', bSub = 'CUBIC BOSS';
       if (currentMatch === 'x4') { bColor = '#c026d3'; bLbl = 'x⁴'; bSub = 'QUARTIC SWARM'; }
@@ -1167,12 +1412,10 @@
     }
 
     function drawArenaGrid() {
-      // Outer Border
       ctx.strokeStyle = '#00f0ff';
       ctx.lineWidth = 2.0;
       ctx.strokeRect(ARENA.x, ARENA.y, ARENA.width, ARENA.height);
 
-      // Single-Path Grid Lines (Fastest 60fps execution)
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1.0;
@@ -1188,7 +1431,6 @@
       }
       ctx.stroke();
 
-      // Axes
       const ox = toScreenX(0), oy = toScreenY(0);
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
@@ -1262,18 +1504,6 @@
       ctx.restore();
     }
 
-    function drawSingularity() {
-      if (!singularity) return;
-      ctx.save();
-      const r = (1.0 - singularity.life / singularity.maxLife) * 80;
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath(); ctx.arc(singularity.x, singularity.y, r, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = '#00f0ff';
-      ctx.beginPath(); ctx.arc(singularity.x, singularity.y, 4, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    }
-
     function drawShockwaves() {
       shockwaves.forEach(sw => {
         ctx.save();
@@ -1289,11 +1519,9 @@
       balls.forEach(b => {
         const sx = toScreenX(b.x), sy = toScreenY(b.y);
 
-        // Lightweight Halo
         ctx.fillStyle = b.halo || 'rgba(255, 85, 0, 0.15)';
         ctx.beginPath(); ctx.arc(sx, sy, b.radius + 4, 0, Math.PI * 2); ctx.fill();
 
-        // Body
         ctx.beginPath(); ctx.arc(sx, sy, b.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#0a0400'; ctx.fill();
         ctx.lineWidth = 2.5; ctx.strokeStyle = b.color; ctx.stroke();
@@ -1307,13 +1535,23 @@
     function drawPlayer() {
       const sx = toScreenX(player.x), sy = toScreenY(player.y);
 
+      // Dash Cooldown Arc Indicator around Player
+      if (player.dashCooldown > 0) {
+        const pct = 1.0 - (player.dashCooldown / 1.1);
+        ctx.beginPath();
+        ctx.arc(sx, sy, player.radius + 8, -Math.PI / 2, -Math.PI / 2 + pct * Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
+        ctx.lineWidth = 2.0;
+        ctx.stroke();
+      }
+
       // Trail
       if (player.trail.length > 2) {
         ctx.beginPath();
         ctx.moveTo(player.trail[0].x, player.trail[0].y);
         for (let i = 1; i < player.trail.length; i++) ctx.lineTo(player.trail[i].x, player.trail[i].y);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
-        ctx.lineWidth = 2.0;
+        ctx.strokeStyle = player.isDashing ? 'rgba(0, 240, 255, 0.8)' : 'rgba(0, 240, 255, 0.35)';
+        ctx.lineWidth = player.isDashing ? 4.0 : 2.0;
         ctx.stroke();
       }
 
@@ -1322,12 +1560,14 @@
         ctx.globalAlpha = 0.4;
       }
 
-      ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+      ctx.fillStyle = player.isDashing ? 'rgba(0, 240, 255, 0.35)' : 'rgba(0, 240, 255, 0.12)';
       ctx.beginPath(); ctx.arc(sx, sy, player.radius + 6, 0, Math.PI * 2); ctx.fill();
 
       ctx.beginPath(); ctx.arc(sx, sy, player.radius, 0, Math.PI * 2);
       ctx.fillStyle = '#001424'; ctx.fill();
-      ctx.lineWidth = 2.8; ctx.strokeStyle = '#00f0ff'; ctx.stroke();
+      ctx.lineWidth = player.isDashing ? 4.0 : 2.8;
+      ctx.strokeStyle = '#00f0ff';
+      ctx.stroke();
 
       ctx.fillStyle = '#00f0ff';
       ctx.font = 'italic bold 13px "Cambria Math", serif';
@@ -1336,6 +1576,31 @@
       ctx.beginPath(); ctx.moveTo(sx - 9, sy); ctx.lineTo(sx + 9, sy);
       ctx.strokeStyle = '#00f0ff'; ctx.stroke();
       ctx.fillText('dx', sx, sy + 7);
+      ctx.restore();
+    }
+
+    function drawTouchJoystickIndicator() {
+      if (!touchJoystick.active) return;
+      ctx.save();
+      // Outer Joystick Base
+      ctx.beginPath();
+      ctx.arc(touchJoystick.startX, touchJoystick.startY, 50, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.08)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+      ctx.lineWidth = 2.0;
+      ctx.stroke();
+
+      // Inner Stick
+      const stickX = touchJoystick.startX + touchJoystick.dx * 45;
+      const stickY = touchJoystick.startY + touchJoystick.dy * 45;
+      ctx.beginPath();
+      ctx.arc(stickX, stickY, 22, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.fill();
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
       ctx.restore();
     }
 
@@ -1454,44 +1719,32 @@
       requestAnimationFrame(gameLoop);
     }
 
-    /* ---------------- Interactive Spectator Actions ---------------- */
-    canvas.addEventListener('pointerdown', (e) => {
-      initAudio();
-      const rect = canvas.getBoundingClientRect();
-      const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
-      const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
+    /* ---------------- UI Event Handlers ---------------- */
+    pilotPlayer.addEventListener('click', () => {
+      isPlayerControlled = true;
+      pilotPlayer.classList.add('active');
+      pilotAuto.classList.remove('active');
+    });
 
-      // Drop Singularity Gravity Ripple
-      singularity = { x: clickX, y: clickY, life: 0.6, maxLife: 0.6 };
-      playSound('singularity', (clickX / canvas.width) * 2 - 1);
-      triggerHaptic('strike');
+    pilotAuto.addEventListener('click', () => {
+      isPlayerControlled = false;
+      pilotAuto.classList.add('active');
+      pilotPlayer.classList.remove('active');
     });
 
     btnStart.addEventListener('click', () => {
       initAudio();
       isRunning = !isRunning;
-      btnStart.textContent = isRunning ? '⏸ PAUSE MATCH' : '▶ RESUME MATCH';
-      btnStart.className = isRunning ? 'btn btn-primary' : 'btn btn-turbo';
+      btnStart.textContent = isRunning ? '⏸ PAUSE BATTLE' : '▶ RESUME BATTLE';
+      btnStart.className = isRunning ? 'btn btn-primary' : 'btn btn-action';
     });
 
     btnRestart.addEventListener('click', () => {
       initAudio();
       resetGame(currentMatch);
       isRunning = true;
-      btnStart.textContent = '⏸ PAUSE MATCH';
+      btnStart.textContent = '⏸ PAUSE BATTLE';
       btnStart.className = 'btn btn-primary';
-    });
-
-    btnTurbo.addEventListener('mousedown', () => { turboActive = true; });
-    btnTurbo.addEventListener('mouseup', () => { turboActive = false; });
-    btnTurbo.addEventListener('touchstart', (e) => { e.preventDefault(); turboActive = true; });
-    btnTurbo.addEventListener('touchend', () => { turboActive = false; });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') turboActive = true;
-    });
-    window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space') turboActive = false;
     });
 
     btnAudio.addEventListener('click', () => {
